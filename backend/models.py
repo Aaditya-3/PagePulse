@@ -1,3 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
+
 class AuditRequest(BaseModel):
-    url : str
+    url: HttpUrl
