@@ -26,7 +26,7 @@ def parse_html(html):
 
     return{
         'title' : title,
-        'meta' : meta , 
+        'meta_description' : meta , 
         'h1_count' : h1_count,
         'imagesWithMissingAlt' : imageCount,
         'wordCount' : wordCount
