@@ -15,7 +15,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://pagepulse-4bgq.onrender.com/",
+    "https://pagepulse-4bgq.onrender.com",
  ],
     allow_credentials=True,
     allow_methods=["*"],
