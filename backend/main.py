@@ -1,13 +1,25 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from models import AuditRequest
-from services import fetch_page
+from services import AuditError, fetch_page
 from parser import parse_html
 
 app = FastAPI(
     title="PagePulse API",
     version="1.0.0",
     description="Website auditing API"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -21,8 +33,7 @@ def home():
 @app.post("/audit")
 def audit_page(request: AuditRequest):
     try:
-        response, response_time = fetch_page(str(request.url))
-
+        response, response_time = fetch_page(request.url)
         report = parse_html(response.text)
 
         return {
@@ -31,8 +42,14 @@ def audit_page(request: AuditRequest):
             **report
         }
 
+    except AuditError as e:
+        raise HTTPException(
+            status_code=e.status_code,
+            detail=e.message,
+        ) from e
+
     except Exception as e:
         raise HTTPException(
-            status_code=400,
-            detail=str(e)
-        )
+            status_code=500,
+            detail="Something went wrong while auditing the website.",
+        ) from e
